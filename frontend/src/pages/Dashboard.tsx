@@ -40,7 +40,7 @@ const StatusBadge = ({ status }: { status: string }) => {
     cancelled: 'badge-closed',
   }
   const labels: Record<string, string> = {
-    completed: '已�???, in_progress: '?��?�?, pending: '待�???, cancelled: '已�?�?,
+    completed: '已完成', in_progress: '進行中', pending: '待服務', cancelled: '已取消',
   }
   return <span className={map[status] || 'badge-pending'}>{labels[status] || status}</span>
 }
@@ -61,34 +61,34 @@ export default function Dashboard() {
             yesterday_services: 80, pending_incidents: 7,
           },
           today_service_list: [
-            { id: 1, time: '09:00', case_name: '?��???, service_code: 'BA07', service_name: '?�助沐浴', caregiver_name: '?��?�?, status: 'completed', status_display: '已�??? },
-            { id: 2, time: '10:30', case_name: '?��???, service_code: 'BA15-1', service_name: '?��?就醫', caregiver_name: '黃�?�?, status: 'in_progress', status_display: '?��?�? },
-            { id: 3, time: '14:00', case_name: '?��???, service_code: 'BA13', service_name: '?�助餐�?', caregiver_name: '?��???, status: 'pending', status_display: '待�??? },
-            { id: 4, time: '16:00', case_name: '張�???, service_code: 'BA05', service_name: '?�本?�常?�顧', caregiver_name: '?�家�?, status: 'pending', status_display: '待�??? },
-            { id: 5, time: '17:30', case_name: '?��???, service_code: 'BA01', service_name: '?�本身�?清�?', caregiver_name: '?�佳??, status: 'pending', status_display: '待�??? },
+            { id: 1, time: '09:00', case_name: '王○○', service_code: 'BA07', service_name: '協助沐浴', caregiver_name: '陳小美', status: 'completed', status_display: '已完成' },
+            { id: 2, time: '10:30', case_name: '李○○', service_code: 'BA15-1', service_name: '陪同就醫', caregiver_name: '黃雅婷', status: 'in_progress', status_display: '進行中' },
+            { id: 3, time: '14:00', case_name: '陳○○', service_code: 'BA13', service_name: '協助餐食', caregiver_name: '林秀芬', status: 'pending', status_display: '待服務' },
+            { id: 4, time: '16:00', case_name: '張○○', service_code: 'BA05', service_name: '基本日常照顧', caregiver_name: '劉家宜', status: 'pending', status_display: '待服務' },
+            { id: 5, time: '17:30', case_name: '林○○', service_code: 'BA01', service_name: '基本身體清潔', caregiver_name: '吳佳玲', status: 'pending', status_display: '待服務' },
           ],
           service_trend: [
             { date: '10/20', count: 68 }, { date: '10/21', count: 72 }, { date: '10/22', count: 85 },
             { date: '10/23', count: 91 }, { date: '10/24', count: 86 }, { date: '10/25', count: 78 }, { date: '10/26', count: 62 },
           ],
           service_distribution: [
-            { code: 'BA01', name: '?�本身�?清�?', count: 108 },
-            { code: 'BA05', name: '?�本?�常?�顧', count: 93 },
-            { code: 'BA07', name: '?�助沐浴', count: 62 },
-            { code: 'BA13', name: '?�助餐�?', count: 69 },
-            { code: 'BA15-1', name: '?��?就醫', count: 54 },
+            { code: 'BA01', name: '基本身體清潔', count: 108 },
+            { code: 'BA05', name: '基本日常照顧', count: 93 },
+            { code: 'BA07', name: '協助沐浴', count: 62 },
+            { code: 'BA13', name: '協助餐食', count: 69 },
+            { code: 'BA15-1', name: '陪同就醫', count: 54 },
           ],
           reminders: [
-            { type: 'evaluation', count: 3, message: '3 位個�??�三個�?評估' },
-            { type: 'incident', count: 2, message: '2 件異常�?件�?追蹤' },
-            { type: 'survey', count: 5, message: '5 份滿?�度調查尚未完�?' },
+            { type: 'evaluation', count: 3, message: '3 位個案需三個月評估' },
+            { type: 'incident', count: 2, message: '2 件異常事件待追蹤' },
+            { type: 'survey', count: 5, message: '5 份滿意度調查尚未完成' },
           ],
         })
       })
       .finally(() => setLoading(false))
   }, [])
 
-  if (loading) return <div className="flex items-center justify-center h-64 text-gray-400">載入�?..</div>
+  if (loading) return <div className="flex items-center justify-center h-64 text-gray-400">載入中...</div>
   if (!data) return null
 
   const { summary } = data
@@ -99,11 +99,11 @@ export default function Dashboard() {
       {/* Page header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-bold text-gray-800">首�??�表板</h1>
-          <p className="text-sm text-gray-500 mt-0.5">歡�??��?，�??��?點�?�?/p>
+          <h1 className="text-xl font-bold text-gray-800">首頁儀表板</h1>
+          <p className="text-sm text-gray-500 mt-0.5">歡迎回來，今日重點如下</p>
         </div>
         <div className="flex gap-2">
-          <button className="btn-primary flex items-center gap-1.5"><Plus className="w-4 h-4" />?��??��?</button>
+          <button className="btn-primary flex items-center gap-1.5"><Plus className="w-4 h-4" />新增個案</button>
         </div>
       </div>
 
@@ -114,9 +114,9 @@ export default function Dashboard() {
             <Users className="w-6 h-6 text-blue-600" />
           </div>
           <div>
-            <div className="text-sm text-gray-500">?��??��???/div>
+            <div className="text-sm text-gray-500">服務個案數</div>
             <div className="text-2xl font-bold text-gray-800">{summary.total_cases}</div>
-            <div className="text-xs text-green-600 mt-0.5">??較�???+{summary.new_cases_week} �?/div>
+            <div className="text-xs text-green-600 mt-0.5">▲ 較上週 +{summary.new_cases_week} 人</div>
           </div>
         </div>
         <div className="stat-card">
@@ -124,9 +124,9 @@ export default function Dashboard() {
             <UserCheck className="w-6 h-6 text-green-600" />
           </div>
           <div>
-            <div className="text-sm text-gray-500">?�職居�???/div>
+            <div className="text-sm text-gray-500">在職居服員</div>
             <div className="text-2xl font-bold text-gray-800">{summary.active_caregivers}</div>
-            <div className="text-xs text-green-600 mt-0.5">??較�???+2 �?/div>
+            <div className="text-xs text-green-600 mt-0.5">▲ 較上週 +2 人</div>
           </div>
         </div>
         <div className="stat-card">
@@ -134,9 +134,9 @@ export default function Dashboard() {
             <Calendar className="w-6 h-6 text-amber-600" />
           </div>
           <div>
-            <div className="text-sm text-gray-500">今日?��??�次</div>
+            <div className="text-sm text-gray-500">今日服務班次</div>
             <div className="text-2xl font-bold text-gray-800">{summary.today_services}</div>
-            <div className="text-xs text-green-600 mt-0.5">??較昨??+{summary.today_services - summary.yesterday_services} ??/div>
+            <div className="text-xs text-green-600 mt-0.5">▲ 較昨日 +{summary.today_services - summary.yesterday_services} 班</div>
           </div>
         </div>
         <div className="stat-card">
@@ -144,9 +144,9 @@ export default function Dashboard() {
             <AlertCircle className="w-6 h-6 text-red-500" />
           </div>
           <div>
-            <div className="text-sm text-gray-500">待追蹤�???/div>
+            <div className="text-sm text-gray-500">待追蹤事項</div>
             <div className="text-2xl font-bold text-gray-800">{summary.pending_incidents}</div>
-            <div className="text-xs text-red-500 mt-0.5">??較昨??+2 �?/div>
+            <div className="text-xs text-red-500 mt-0.5">▲ 較昨日 +2 件</div>
           </div>
         </div>
       </div>
@@ -156,8 +156,8 @@ export default function Dashboard() {
         {/* Service Trend */}
         <div className="card">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="font-semibold text-gray-700">今日?��?趨勢</h2>
-            <span className="text-xs bg-gray-100 px-2 py-1 rounded">近�???/span>
+            <h2 className="font-semibold text-gray-700">今日服務趨勢</h2>
+            <span className="text-xs bg-gray-100 px-2 py-1 rounded">近一週</span>
           </div>
           <ResponsiveContainer width="100%" height={200}>
             <LineChart data={data.service_trend} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
@@ -165,7 +165,7 @@ export default function Dashboard() {
               <XAxis dataKey="date" tick={{ fontSize: 12 }} />
               <YAxis tick={{ fontSize: 12 }} />
               <Tooltip />
-              <Line type="monotone" dataKey="count" stroke="#0d9488" strokeWidth={2.5} dot={{ r: 4 }} name="?��??�次" />
+              <Line type="monotone" dataKey="count" stroke="#0d9488" strokeWidth={2.5} dot={{ r: 4 }} name="服務班次" />
             </LineChart>
           </ResponsiveContainer>
         </div>
@@ -173,8 +173,8 @@ export default function Dashboard() {
         {/* Service Distribution */}
         <div className="card">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="font-semibold text-gray-700">?��?類�??��?</h2>
-            <span className="text-xs bg-gray-100 px-2 py-1 rounded">?��?</span>
+            <h2 className="font-semibold text-gray-700">服務類型分布</h2>
+            <span className="text-xs bg-gray-100 px-2 py-1 rounded">本月</span>
           </div>
           <div className="flex items-center gap-4">
             <ResponsiveContainer width="50%" height={180}>
@@ -186,7 +186,7 @@ export default function Dashboard() {
                   ))}
                 </Pie>
                 <text x="50%" y="50%" textAnchor="middle" dominantBaseline="middle" className="text-sm">
-                  <tspan x="50%" dy="-8" fontSize="11" fill="#6b7280">總�?</tspan>
+                  <tspan x="50%" dy="-8" fontSize="11" fill="#6b7280">總計</tspan>
                   <tspan x="50%" dy="18" fontSize="16" fontWeight="bold" fill="#1f2937">{totalDist}</tspan>
                   <tspan x="50%" dy="14" fontSize="10" fill="#6b7280">人次</tspan>
                 </text>
@@ -210,17 +210,17 @@ export default function Dashboard() {
         {/* Today Service List */}
         <div className="card lg:col-span-2">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="font-semibold text-gray-700">今日?��??�單</h2>
-            <button className="text-xs text-teal-600 hover:underline flex items-center gap-1">?��??�部 <ChevronRight className="w-3 h-3" /></button>
+            <h2 className="font-semibold text-gray-700">今日服務名單</h2>
+            <button className="text-xs text-teal-600 hover:underline flex items-center gap-1">查看全部 <ChevronRight className="w-3 h-3" /></button>
           </div>
           <table className="w-full text-sm">
             <thead>
               <tr className="text-gray-400 text-xs border-b">
-                <th className="text-left pb-2 font-medium">?��?</th>
-                <th className="text-left pb-2 font-medium">?��?</th>
-                <th className="text-left pb-2 font-medium">?��??�目</th>
-                <th className="text-left pb-2 font-medium">居�???/th>
-                <th className="text-left pb-2 font-medium">?�??/th>
+                <th className="text-left pb-2 font-medium">時間</th>
+                <th className="text-left pb-2 font-medium">個案</th>
+                <th className="text-left pb-2 font-medium">服務項目</th>
+                <th className="text-left pb-2 font-medium">居服員</th>
+                <th className="text-left pb-2 font-medium">狀態</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
@@ -243,12 +243,12 @@ export default function Dashboard() {
           <div className="card">
             <div className="flex items-center gap-2 mb-3">
               <Bell className="w-4 h-4 text-amber-500" />
-              <h2 className="font-semibold text-gray-700 text-sm">?��??��?</h2>
+              <h2 className="font-semibold text-gray-700 text-sm">重要提醒</h2>
             </div>
             <div className="space-y-2">
               {data.reminders.map((r, i) => (
                 <div key={i} className="flex items-start gap-2 text-sm">
-                  <span className="text-amber-500 mt-0.5">??/span>
+                  <span className="text-amber-500 mt-0.5">•</span>
                   <span className="text-gray-600">{r.message}</span>
                 </div>
               ))}
@@ -259,14 +259,14 @@ export default function Dashboard() {
           <div className="card">
             <div className="flex items-center gap-2 mb-3">
               <CheckSquare className="w-4 h-4 text-teal-500" />
-              <h2 className="font-semibold text-gray-700 text-sm">快速�???/h2>
+              <h2 className="font-semibold text-gray-700 text-sm">快速功能</h2>
             </div>
             <div className="grid grid-cols-2 gap-2">
               {[
-                { label: '?��??��?', color: 'bg-teal-50 text-teal-700 hover:bg-teal-100' },
-                { label: '?��?家訪', color: 'bg-green-50 text-green-700 hover:bg-green-100' },
-                { label: '?��??�常事件', color: 'bg-red-50 text-red-700 hover:bg-red-100' },
-                { label: '?�質?�核', color: 'bg-purple-50 text-purple-700 hover:bg-purple-100' },
+                { label: '新增個案', color: 'bg-teal-50 text-teal-700 hover:bg-teal-100' },
+                { label: '新增家訪', color: 'bg-green-50 text-green-700 hover:bg-green-100' },
+                { label: '新增異常事件', color: 'bg-red-50 text-red-700 hover:bg-red-100' },
+                { label: '品質查核', color: 'bg-purple-50 text-purple-700 hover:bg-purple-100' },
               ].map(({ label, color }) => (
                 <button key={label} className={`${color} text-xs font-medium py-2 px-3 rounded-lg transition-colors text-center`}>
                   {label}

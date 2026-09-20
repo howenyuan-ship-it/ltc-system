@@ -128,8 +128,8 @@ CORS_ALLOW_CREDENTIALS = True
 
 # API Docs
 SPECTACULAR_SETTINGS = {
-    'TITLE': '?�照?��?管�?系統 API',
-    'DESCRIPTION': '?�東安�?家長?��??�管?�系統�?�?API',
+    'TITLE': '長照服務管理系統 API',
+    'DESCRIPTION': '新東安居家長照服務管理系統後端 API',
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
 }
