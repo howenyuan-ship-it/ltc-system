@@ -1,0 +1,63 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  backend-test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: ltc_db_test
+          POSTGRES_USER: ltc_user
+          POSTGRES_PASSWORD: ltc_password
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install backend deps
+        run: pip install -r backend/requirements.txt
+      - name: Run Django checks
+        working-directory: backend
+        env:
+          SECRET_KEY: ci-test-key
+          DB_NAME: ltc_db_test
+          DB_USER: ltc_user
+          DB_PASSWORD: ltc_password
+          DB_HOST: localhost
+          DEBUG: 'True'
+        run: |
+          python manage.py check
+          python manage.py migrate
+
+  frontend-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+      - name: Install frontend deps
+        working-directory: frontend
+        run: npm ci --legacy-peer-deps
+      - name: Build frontend
+        working-directory: frontend
+        env:
+          VITE_API_URL: http://localhost:8000/api
+        run: npm run build
