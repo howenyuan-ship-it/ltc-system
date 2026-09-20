@@ -1,8 +1,10 @@
-FROM node:20-alpine AS builder
+FROM node:22-alpine AS builder
 WORKDIR /app
 COPY package*.json ./
-RUN npm ci
+RUN npm ci --legacy-peer-deps
 COPY . .
+# 走 nginx 反向代理，前端用相對路徑打 API，不需要 CORS
+ENV VITE_API_URL=/api
 RUN npm run build
 
 FROM nginx:alpine
