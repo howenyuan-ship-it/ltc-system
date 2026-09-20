@@ -41,6 +41,7 @@ jobs:
           DB_HOST: localhost
           DEBUG: 'True'
         run: |
+          python manage.py makemigrations
           python manage.py check
           python manage.py migrate
 

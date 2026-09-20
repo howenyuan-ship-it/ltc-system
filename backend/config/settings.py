@@ -119,7 +119,7 @@ SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=config('ACCESS_TOKEN_LIFETIME_MINUTES', default=60, cast=int)),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=config('REFRESH_TOKEN_LIFETIME_DAYS', default=7, cast=int)),
     'ROTATE_REFRESH_TOKENS': True,
-    'BLACKLIST_AFTER_ROTATION': True,
+    'BLACKLIST_AFTER_ROTATION': False,  # requires token_blacklist app if True
 }
 
 # CORS
@@ -128,8 +128,8 @@ CORS_ALLOW_CREDENTIALS = True
 
 # API Docs
 SPECTACULAR_SETTINGS = {
-    'TITLE': '長照服務管理系統 API',
-    'DESCRIPTION': '新東安居家長照服務管理系統後端 API',
+    'TITLE': '?�照?��?管�?系統 API',
+    'DESCRIPTION': '?�東安�?家長?��??�管?�系統�?�?API',
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
 }
