@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { MapContainer, Marker, Popup, TileLayer, useMap } from 'react-leaflet'
 import {
-  AlertTriangle, Building2, CheckCircle2, Clock, MapPin, RefreshCw, Search, UserRound, X,
+  AlertTriangle, Building2, CheckCircle2, Clock, MapPin, MapPinOff, RefreshCw, Search, UserRound, X,
 } from 'lucide-react'
 import 'leaflet/dist/leaflet.css'
 
@@ -147,6 +147,7 @@ export default function GeoMap() {
     [records],
   )
   const lateRecords = useMemo(() => records.filter(r => r.map_status === 'late'), [records])
+  const unlocatedRecords = useMemo(() => records.filter(r => !r.has_location), [records])
 
   const bounds = useMemo(() => {
     const pts: [number, number][] = []
@@ -311,6 +312,20 @@ export default function GeoMap() {
             </div>
           )}
 
+          {unlocatedRecords.length > 0 && (
+            <div className="mx-3 mt-2 px-3 py-2 bg-amber-50 border border-amber-200 rounded-lg flex items-start gap-2">
+              <MapPinOff className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
+              <div className="text-xs text-amber-800 leading-relaxed">
+                <span className="font-semibold">
+                  {stats?.unlocated_cases ?? 0} 位個案尚未定位（{unlocatedRecords.length} 筆班次）
+                </span>
+                <div className="text-amber-700/80 mt-0.5">
+                  地圖上看不到這些個案。請到個案管理頁補門牌號碼或直接設定座標。
+                </div>
+              </div>
+            </div>
+          )}
+
           <div className="px-3 pt-3 pb-1 text-xs font-semibold text-gray-500 flex items-center justify-between">
             <span>當日班表</span>
             <span className="text-gray-400 font-normal">{records.length} 筆</span>
@@ -350,6 +365,13 @@ export default function GeoMap() {
                     )}
                     {r.actual_start && (
                       <span className="text-[10px] text-gray-400">打卡 {r.actual_start}</span>
+                    )}
+                    {!r.has_location && (
+                      <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px]
+                                       border border-amber-300 bg-amber-50 text-amber-700"
+                            title={`${r.address_quality_label}，地圖上不會顯示`}>
+                        <MapPinOff className="w-3 h-3" />未定位
+                      </span>
                     )}
                   </div>
                 </button>
@@ -522,6 +544,11 @@ export default function GeoMap() {
           <span className="flex items-center gap-1.5"><StatusDot status="late_completed" />遲到後完成 {stats?.late_completed ?? 0}</span>
           <span className="flex items-center gap-1.5"><StatusDot status="pending" />未完成 {stats?.pending ?? 0}</span>
           <span className="flex items-center gap-1.5"><StatusDot status="late" />遲到 {stats?.late ?? 0}</span>
+          {(stats?.unlocated_cases ?? 0) > 0 && (
+            <span className="flex items-center gap-1.5 text-amber-300">
+              <MapPinOff className="w-3.5 h-3.5" />未定位 {stats?.unlocated_cases}
+            </span>
+          )}
         </div>
       </div>
     </div>

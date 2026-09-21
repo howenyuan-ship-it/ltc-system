@@ -97,3 +97,20 @@ class Case(models.Model):
     @property
     def has_location(self):
         return self.latitude is not None and self.longitude is not None
+
+    @property
+    def address_quality(self):
+        """地址精確到哪一層：complete / partial / district / empty"""
+        from apps.geo.address import classify
+        return classify(self.full_address).level
+
+    @property
+    def address_quality_label(self):
+        from apps.geo.address import classify
+        return classify(self.full_address).label
+
+    @property
+    def is_geocodable(self):
+        """地址是否精確到足以自動定位（沒有門牌號碼就不該給座標）"""
+        from apps.geo.address import classify
+        return classify(self.full_address).is_geocodable

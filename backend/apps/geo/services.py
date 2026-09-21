@@ -114,6 +114,9 @@ def serialize_record(record: ServiceRecord, now: datetime) -> dict:
         'latitude': _decimal(case.latitude),
         'longitude': _decimal(case.longitude),
         'geocode_source': case.geocode_source,
+        'has_location': case.has_location,
+        'address_quality': case.address_quality,
+        'address_quality_label': case.address_quality_label,
         'caregiver_id': caregiver.id if caregiver else None,
         'caregiver_name': (caregiver.chinese_name or caregiver.username) if caregiver else '未指派',
         'service_code': record.service_item.code,
@@ -194,6 +197,10 @@ def build_map_data(
         'cancelled': sum(1 for r in serialized if r['map_status'] == STATUS_CANCELLED),
     }
     stats['completed_total'] = stats['completed'] + stats['late_completed']
+    # 未定位的個案在地圖上完全看不到，必須另外統計出來提醒督導，
+    # 否則畫面上少了幾個人是察覺不到的
+    stats['unlocated_records'] = sum(1 for r in serialized if not r['has_location'])
+    stats['unlocated_cases'] = len({r['case_id'] for r in serialized if not r['has_location']})
     stats['completed_cases'] = len({
         r['case_id'] for r in serialized
         if r['map_status'] in (STATUS_COMPLETED, STATUS_LATE_COMPLETED)

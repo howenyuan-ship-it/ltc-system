@@ -21,6 +21,8 @@ export interface PickerCase {
   latitude: number | string | null
   longitude: number | string | null
   geocode_source?: string
+  address_quality?: string
+  address_quality_label?: string
 }
 
 interface Props {
@@ -65,6 +67,13 @@ export function parseCoords(input: string): { lat: number; lng: number; swapped:
 
 function isInTaiwan(lat: number, lng: number): boolean {
   return lat >= TAIWAN.latMin && lat <= TAIWAN.latMax && lng >= TAIWAN.lngMin && lng <= TAIWAN.lngMax
+}
+
+/** 與後端 apps/geo/address.py 的判定一致：有門牌號碼才算完整 */
+const HOUSE_NUMBER = /\d+\s*(?:[之-]\s*\d+)?\s*號/
+
+function hasHouseNumber(addr: string): boolean {
+  return HOUSE_NUMBER.test(addr)
 }
 
 /** 對話框開啟時地圖容器尺寸才確定，必須重新計算一次否則圖磚會錯位 */
@@ -187,6 +196,7 @@ export default function LocationPicker({ target, onClose, onSaved }: Props) {
   }
 
   const outsideTaiwan = pos ? !isInTaiwan(pos[0], pos[1]) : false
+  const addressIncomplete = address.trim().length > 0 && !hasHouseNumber(address)
 
   return (
     <div className="fixed inset-0 z-[2000] bg-black/50 flex items-center justify-center p-4"
@@ -267,6 +277,17 @@ export default function LocationPicker({ target, onClose, onSaved }: Props) {
             </div>
           </div>
 
+          {addressIncomplete && (
+            <div className="text-xs text-amber-800 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 flex gap-2">
+              <TriangleAlert className="w-4 h-4 flex-shrink-0" />
+              <div>
+                這個地址沒有門牌號碼，系統不會自動定位（只到路段的地址會得到整條路的中心點）。
+                <div className="mt-0.5 text-amber-700/80">
+                  你仍然可以在地圖上手動指定位置並儲存，那會被記為人工座標。
+                </div>
+              </div>
+            </div>
+          )}
           {note && <div className="text-xs text-teal-700 bg-teal-50 border border-teal-200 rounded-lg px-3 py-2">{note}</div>}
           {error && <div className="text-xs text-red-700 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{error}</div>}
           {outsideTaiwan && (

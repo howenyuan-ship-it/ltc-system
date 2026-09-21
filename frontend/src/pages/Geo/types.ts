@@ -1,5 +1,8 @@
 export type MapStatus = 'completed' | 'pending' | 'late' | 'late_completed' | 'cancelled'
 
+/** 地址精確到哪一層。只有 complete 能自動定位，其餘必須人工在地圖上指定。 */
+export type AddressQuality = 'complete' | 'partial' | 'district' | 'empty'
+
 export interface GeoRecord {
   id: number
   case_id: number
@@ -9,6 +12,9 @@ export interface GeoRecord {
   latitude: number | null
   longitude: number | null
   geocode_source: string
+  has_location: boolean
+  address_quality: AddressQuality
+  address_quality_label: string
   caregiver_id: number | null
   caregiver_name: string
   service_code: string
@@ -70,6 +76,8 @@ export interface GeoStats {
   cancelled: number
   completed_total: number
   completed_cases: number
+  unlocated_records: number
+  unlocated_cases: number
 }
 
 export interface MapData {
