@@ -19,6 +19,7 @@ from django.utils import timezone
 from apps.accounts.models import Organization, User
 from apps.cases.models import Case
 from apps.geo.models import CaregiverLocation
+from apps.geo.address import classify
 from apps.geo.services import local_datetime
 from apps.services.models import ServiceItem, ServiceRecord
 
@@ -73,20 +74,35 @@ class Command(BaseCommand):
 
     # ── 1. 補地址 ────────────────────────────────────────────
     def _fill_addresses(self, cases, org):
-        filled = 0
+        """補上完整門牌地址，並刻意保留兩筆不完整的，用來示範「未定位」狀態。
+
+        會覆蓋任何不夠精確的地址（不只是空白的），這樣每次重跑都得到
+        一致的示範狀態，而不是被上一輪殘留的半截地址影響。
+        """
+        filled = incomplete = 0
         for i, case in enumerate(cases):
-            if case.address:
+            if classify(case.full_address).is_geocodable:
                 continue
             district, pattern = DEMO_STREETS[i % len(DEMO_STREETS)]
             case.district = district
             case.city = '台南市'
-            case.address = pattern.format(random.randint(1, 350))
+            if i < 2:
+                # 前兩筆刻意只到路段，示範地址不完整時的把關與畫面標示
+                case.address = pattern.format('').replace('號', '').rstrip()
+                incomplete += 1
+            else:
+                case.address = pattern.format(random.randint(1, 350))
+                filled += 1
             case.save(update_fields=['city', 'district', 'address'])
-            filled += 1
-        if not org.address or '號' not in org.address:
+
+        if not classify(org.address).is_geocodable:
             org.address = '台南市東區林森路一段149號'
             org.save(update_fields=['address'])
-        self.stdout.write(f'✓ 補上個案地址 {filled} 筆')
+
+        self.stdout.write(
+            f'✓ 個案地址：完整 {filled} 筆'
+            + (f'、刻意留不完整 {incomplete} 筆（示範「未定位」）' if incomplete else '')
+        )
 
     # ── 2. 指派居服員督導 ────────────────────────────────────
     def _assign_supervisors(self, caregivers):

@@ -147,8 +147,4 @@ SERVICE_LATE_GRACE_MINUTES = config('SERVICE_LATE_GRACE_MINUTES', default=15, ca
 # 居服員位置視為「離線」的分鐘數
 CAREGIVER_LOCATION_STALE_MINUTES = config('CAREGIVER_LOCATION_STALE_MINUTES', default=30, cast=int)
 
-# fallback 假座標的範圍（台南市區）
-GEOCODE_FALLBACK_BOUNDS = {
-    'lat_min': 22.930, 'lat_max': 23.060,
-    'lng_min': 120.150, 'lng_max': 120.300,
-}
+# fallback 假座標改以行政區中心點產生，參數見 apps/geo/geocoding.py
