@@ -36,6 +36,10 @@ class Case(models.Model):
     address = models.CharField('居住地址', max_length=200, blank=True)
     district = models.CharField('居住區域', max_length=50, blank=True)
     city = models.CharField('居住縣市', max_length=20, blank=True)
+    latitude = models.DecimalField('緯度', max_digits=9, decimal_places=6, null=True, blank=True)
+    longitude = models.DecimalField('經度', max_digits=9, decimal_places=6, null=True, blank=True)
+    geocoded_at = models.DateTimeField('定位時間', null=True, blank=True)
+    geocode_source = models.CharField('定位來源', max_length=20, blank=True)
 
     # 長照資訊
     cms_level = models.CharField('CMS等級', max_length=1, choices=CareLevel.choices, blank=True)
@@ -85,3 +89,11 @@ class Case(models.Model):
                 (today.month, today.day) < (self.birth_date.month, self.birth_date.day)
             )
         return None
+
+    @property
+    def full_address(self):
+        return f"{self.city}{self.district}{self.address}".strip()
+
+    @property
+    def has_location(self):
+        return self.latitude is not None and self.longitude is not None

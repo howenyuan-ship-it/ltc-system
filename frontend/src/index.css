@@ -27,3 +27,22 @@
   .badge-completed { @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800; }
   .badge-closed { @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800; }
 }
+
+/* ── 地理位置管理：Leaflet 樣式微調 ───────────────────── */
+.ltc-pin,
+.ltc-dot,
+.ltc-site {
+  background: transparent;
+  border: none;
+}
+.ltc-pin-active svg {
+  filter: drop-shadow(0 0 5px rgba(13, 148, 136, 0.9));
+  transform: scale(1.15);
+  transform-origin: bottom center;
+}
+.leaflet-popup-content {
+  margin: 10px 12px;
+}
+.leaflet-container {
+  font-family: inherit;
+}

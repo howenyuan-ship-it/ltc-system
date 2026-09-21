@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
-import { Search, Plus, Filter, Download, ChevronLeft, ChevronRight } from 'lucide-react'
+import { Search, Plus, Filter, Download, ChevronLeft, ChevronRight, MapPin, MapPinOff } from 'lucide-react'
 import { casesApi } from '../../api/client'
+import LocationPicker from '../../components/LocationPicker'
+import type { PickerCase } from '../../components/LocationPicker'
 
 interface Case {
   id: number
@@ -15,6 +17,10 @@ interface Case {
   status_display: string
   city: string
   district: string
+  address: string
+  latitude: number | string | null
+  longitude: number | string | null
+  geocode_source: string
   supervisor_name: string
   primary_caregiver_name: string
   service_start_date: string
@@ -34,6 +40,7 @@ export default function CaseList() {
   const [statusFilter, setStatusFilter] = useState('')
   const [page, setPage] = useState(1)
   const [total, setTotal] = useState(0)
+  const [picking, setPicking] = useState<PickerCase | null>(null)
 
   const pageSize = 20
 
@@ -51,11 +58,11 @@ export default function CaseList() {
       .catch(() => {
         // Mock fallback
         const mockCases: Case[] = [
-          { id: 1, case_no: '東區020', welfare_no: '111U14434', name: '王張月娥', gender: 'F', age: 89, cms_level: '5', cms_level_display: 'CMS 5級', status: 'active', status_display: '服務中', city: '台南市', district: '東區', supervisor_name: '王督導', primary_caregiver_name: '陳小美', service_start_date: '2024-01-15' },
-          { id: 2, case_no: '永康區018', welfare_no: '115U16015', name: '歐張春蘭', gender: 'F', age: 82, cms_level: '4', cms_level_display: 'CMS 4級', status: 'active', status_display: '服務中', city: '台南市', district: '永康區', supervisor_name: '王督導', primary_caregiver_name: '黃雅婷', service_start_date: '2024-02-20' },
-          { id: 3, case_no: '東區019', welfare_no: '115U15878', name: '黃淑美', gender: 'F', age: 76, cms_level: '3', cms_level_display: 'CMS 3級', status: 'active', status_display: '服務中', city: '台南市', district: '東區', supervisor_name: '王督導', primary_caregiver_name: '林秀芬', service_start_date: '2024-03-10' },
-          { id: 4, case_no: '東區018', welfare_no: '115U14285', name: '吳文原', gender: 'M', age: 84, cms_level: '5', cms_level_display: 'CMS 5級', status: 'active', status_display: '服務中', city: '台南市', district: '東區', supervisor_name: '王督導', primary_caregiver_name: '劉家宜', service_start_date: '2024-01-05' },
-          { id: 5, case_no: '永康區017', welfare_no: '115U13884', name: '張黔生', gender: 'M', age: 86, cms_level: '6', cms_level_display: 'CMS 6級', status: 'active', status_display: '服務中', city: '台南市', district: '永康區', supervisor_name: '王督導', primary_caregiver_name: '吳佳玲', service_start_date: '2024-02-01' },
+          { id: 1, case_no: '東區020', welfare_no: '111U14434', name: '王張月娥', gender: 'F', age: 89, cms_level: '5', cms_level_display: 'CMS 5級', status: 'active', status_display: '服務中', address: '', latitude: null, longitude: null, geocode_source: '', city: '台南市', district: '東區', supervisor_name: '王督導', primary_caregiver_name: '陳小美', service_start_date: '2024-01-15' },
+          { id: 2, case_no: '永康區018', welfare_no: '115U16015', name: '歐張春蘭', gender: 'F', age: 82, cms_level: '4', cms_level_display: 'CMS 4級', status: 'active', status_display: '服務中', address: '', latitude: null, longitude: null, geocode_source: '', city: '台南市', district: '永康區', supervisor_name: '王督導', primary_caregiver_name: '黃雅婷', service_start_date: '2024-02-20' },
+          { id: 3, case_no: '東區019', welfare_no: '115U15878', name: '黃淑美', gender: 'F', age: 76, cms_level: '3', cms_level_display: 'CMS 3級', status: 'active', status_display: '服務中', address: '', latitude: null, longitude: null, geocode_source: '', city: '台南市', district: '東區', supervisor_name: '王督導', primary_caregiver_name: '林秀芬', service_start_date: '2024-03-10' },
+          { id: 4, case_no: '東區018', welfare_no: '115U14285', name: '吳文原', gender: 'M', age: 84, cms_level: '5', cms_level_display: 'CMS 5級', status: 'active', status_display: '服務中', address: '', latitude: null, longitude: null, geocode_source: '', city: '台南市', district: '東區', supervisor_name: '王督導', primary_caregiver_name: '劉家宜', service_start_date: '2024-01-05' },
+          { id: 5, case_no: '永康區017', welfare_no: '115U13884', name: '張黔生', gender: 'M', age: 86, cms_level: '6', cms_level_display: 'CMS 6級', status: 'active', status_display: '服務中', address: '', latitude: null, longitude: null, geocode_source: '', city: '台南市', district: '永康區', supervisor_name: '王督導', primary_caregiver_name: '吳佳玲', service_start_date: '2024-02-01' },
         ]
         setCases(mockCases)
         setTotal(29)
@@ -82,7 +89,7 @@ export default function CaseList() {
       {/* Filters */}
       <div className="card">
         <div className="flex flex-wrap gap-3">
-          <div className="relative flex-1 min-w-48">
+          <div className="relative flex-1 min-w-[12rem]">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
             <input
               value={search}
@@ -125,6 +132,7 @@ export default function CaseList() {
                 <th className="text-left py-3 px-4 font-medium text-gray-500">CMS等級</th>
                 <th className="text-left py-3 px-4 font-medium text-gray-500">狀態</th>
                 <th className="text-left py-3 px-4 font-medium text-gray-500">居住區域</th>
+                <th className="text-left py-3 px-4 font-medium text-gray-500">座標</th>
                 <th className="text-left py-3 px-4 font-medium text-gray-500">主責居服員</th>
                 <th className="text-left py-3 px-4 font-medium text-gray-500">服務開始日</th>
                 <th className="text-left py-3 px-4 font-medium text-gray-500">操作</th>
@@ -132,7 +140,7 @@ export default function CaseList() {
             </thead>
             <tbody className="divide-y divide-gray-50">
               {loading ? (
-                <tr><td colSpan={12} className="text-center py-12 text-gray-400">載入中...</td></tr>
+                <tr><td colSpan={13} className="text-center py-12 text-gray-400">載入中...</td></tr>
               ) : cases.map((c, i) => (
                 <tr key={c.id} className="hover:bg-gray-50 transition-colors">
                   <td className="py-3 px-4 text-gray-400">{(page - 1) * pageSize + i + 1}</td>
@@ -150,9 +158,27 @@ export default function CaseList() {
                     </span>
                   </td>
                   <td className="py-3 px-4 text-gray-600">{c.city}{c.district}</td>
+                  <td className="py-3 px-4">
+                    {c.latitude && c.longitude ? (
+                      <span className={`inline-flex items-center gap-1 text-xs ${
+                        c.geocode_source === 'manual' ? 'text-green-700' : 'text-amber-600'
+                      }`}>
+                        <MapPin className="w-3.5 h-3.5" />
+                        {c.geocode_source === 'manual' ? '人工設定'
+                          : c.geocode_source === 'tgos' ? '門牌定位' : '示範假座標'}
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-1 text-xs text-gray-400">
+                        <MapPinOff className="w-3.5 h-3.5" />未設定
+                      </span>
+                    )}
+                  </td>
                   <td className="py-3 px-4 text-gray-600">{c.primary_caregiver_name}</td>
                   <td className="py-3 px-4 text-gray-600">{c.service_start_date}</td>
-                  <td className="py-3 px-4">
+                  <td className="py-3 px-4 whitespace-nowrap">
+                    <button onClick={() => setPicking(c)}
+                            className="text-teal-600 hover:text-teal-800 text-xs font-medium">設定座標</button>
+                    <span className="text-gray-200 mx-1.5">|</span>
                     <button className="text-teal-600 hover:text-teal-800 text-xs font-medium">班表</button>
                   </td>
                 </tr>
@@ -178,6 +204,18 @@ export default function CaseList() {
           </div>
         )}
       </div>
+
+      {picking && (
+        <LocationPicker
+          target={picking}
+          onClose={() => setPicking(null)}
+          onSaved={result => {
+            setCases(prev => prev.map(c => c.id === result.case_id
+              ? { ...c, latitude: result.latitude, longitude: result.longitude, geocode_source: 'manual' }
+              : c))
+          }}
+        />
+      )}
     </div>
   )
 }

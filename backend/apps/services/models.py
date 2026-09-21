@@ -38,6 +38,10 @@ class ServiceRecord(models.Model):
     scheduled_end_time = models.TimeField('排定結束時間')
     actual_start_time = models.DateTimeField('實際開始時間', null=True, blank=True)
     actual_end_time = models.DateTimeField('實際結束時間', null=True, blank=True)
+    checkin_latitude = models.DecimalField('打卡緯度', max_digits=9, decimal_places=6, null=True, blank=True)
+    checkin_longitude = models.DecimalField('打卡經度', max_digits=9, decimal_places=6, null=True, blank=True)
+    checkout_latitude = models.DecimalField('簽退緯度', max_digits=9, decimal_places=6, null=True, blank=True)
+    checkout_longitude = models.DecimalField('簽退經度', max_digits=9, decimal_places=6, null=True, blank=True)
 
     status = models.CharField('狀態', max_length=15, choices=Status.choices, default=Status.PENDING)
     service_notes = models.TextField('服務紀錄', blank=True)

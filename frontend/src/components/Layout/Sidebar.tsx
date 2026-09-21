@@ -2,12 +2,13 @@ import { NavLink } from 'react-router-dom'
 import {
   LayoutDashboard, Users, UserCheck, ClipboardList, BookOpen,
   AlertTriangle, MessageSquare, ShieldCheck, BarChart3, Bell,
-  Settings, Heart, Activity, FileText, GraduationCap
+  Settings, Heart, Activity, FileText, GraduationCap, MapPinned
 } from 'lucide-react'
 
 const navItems = [
   { label: '首頁儀表板', icon: LayoutDashboard, path: '/' },
   { label: '個案管理', icon: Users, path: '/cases' },
+  { label: '地理位置管理', icon: MapPinned, path: '/geo' },
   { label: '人員管理', icon: UserCheck, path: '/staff' },
   { label: '個案評估', icon: ClipboardList, path: '/assessments' },
   { label: '照顧計畫', icon: BookOpen, path: '/care-plans' },

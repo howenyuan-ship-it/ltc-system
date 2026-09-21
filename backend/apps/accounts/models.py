@@ -8,6 +8,9 @@ class Organization(models.Model):
     code = models.CharField('機構代碼', max_length=20, unique=True)
     address = models.CharField('地址', max_length=200, blank=True)
     phone = models.CharField('電話', max_length=20, blank=True)
+    latitude = models.DecimalField('緯度', max_digits=9, decimal_places=6, null=True, blank=True)
+    longitude = models.DecimalField('經度', max_digits=9, decimal_places=6, null=True, blank=True)
+    is_service_site = models.BooleanField('為服務據點', default=True)
     is_active = models.BooleanField('啟用', default=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -34,6 +37,10 @@ class User(AbstractUser):
         related_name='users', verbose_name='所屬機構'
     )
     role = models.CharField('角色', max_length=20, choices=Role.choices, default=Role.VIEWER)
+    supervisor = models.ForeignKey(
+        'self', on_delete=models.SET_NULL, null=True, blank=True,
+        related_name='supervised_staff', verbose_name='所屬督導'
+    )
     chinese_name = models.CharField('中文姓名', max_length=50, blank=True)
     employee_id = models.CharField('員工編號', max_length=20, blank=True)
     phone = models.CharField('電話', max_length=20, blank=True)

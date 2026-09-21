@@ -69,3 +69,20 @@ export const incidentsApi = {
   create: (data: object) => apiClient.post('/incidents/', data),
   update: (id: number, data: object) => apiClient.patch(`/incidents/${id}/`, data),
 }
+
+export const geoApi = {
+  /** 地圖頁需要的全部資料：班次、居服員位置、服務據點、統計 */
+  mapData: (params?: Record<string, string>) => apiClient.get('/geo/map-data/', { params }),
+  /** 過濾下拉選單用的督導清單 */
+  supervisors: () => apiClient.get('/geo/supervisors/'),
+  /** 登入中居服員的今日班表（手機打卡頁用） */
+  mySchedule: (params?: Record<string, string>) => apiClient.get('/geo/my-schedule/', { params }),
+  /** 回報目前位置 */
+  reportLocation: (data: object) => apiClient.post('/geo/location/', data),
+  /** 到案家打卡開始服務 */
+  checkIn: (data: object) => apiClient.post('/geo/check-in/', data),
+  /** 服務結束簽退 */
+  checkOut: (data: object) => apiClient.post('/geo/check-out/', data),
+  /** 人工設定個案居家座標 */
+  setCaseLocation: (data: object) => apiClient.post('/geo/case-location/', data),
+}

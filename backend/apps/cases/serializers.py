@@ -14,7 +14,8 @@ class CaseListSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'case_no', 'welfare_no', 'name', 'gender', 'age',
             'cms_level', 'cms_level_display', 'status', 'status_display',
-            'district', 'city', 'phone',
+            'district', 'city', 'phone', 'address',
+            'latitude', 'longitude', 'geocode_source', 'geocoded_at',
             'supervisor_name', 'primary_caregiver_name',
             'service_start_date', 'service_end_date',
         ]

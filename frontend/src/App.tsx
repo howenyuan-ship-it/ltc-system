@@ -5,6 +5,8 @@ import Login from './pages/Login'
 import Dashboard from './pages/Dashboard'
 import CaseList from './pages/Cases/CaseList'
 import IncidentList from './pages/Incidents/IncidentList'
+import GeoMap from './pages/Geo/GeoMap'
+import CheckIn from './pages/Geo/CheckIn'
 import Placeholder from './pages/Placeholder'
 import { useAuthStore } from './store/authStore'
 
@@ -24,9 +26,12 @@ export default function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/login" element={<Login />} />
+        {/* 行動版打卡頁走全螢幕版面，不套用桌機側邊欄 */}
+        <Route path="/checkin" element={<RequireAuth><CheckIn /></RequireAuth>} />
         <Route path="/" element={<RequireAuth><AppLayout /></RequireAuth>}>
           <Route index element={<Dashboard />} />
           <Route path="cases" element={<CaseList />} />
+          <Route path="geo" element={<GeoMap />} />
           <Route path="staff" element={<Placeholder title="人員管理" />} />
           <Route path="assessments" element={<Placeholder title="個案評估" />} />
           <Route path="care-plans" element={<Placeholder title="照顧計畫" />} />

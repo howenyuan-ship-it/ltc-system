@@ -2,6 +2,7 @@ services:
   db:
     image: postgres:16-alpine
     container_name: ltc_db
+    restart: unless-stopped
     environment:
       POSTGRES_DB: ltc_db
       POSTGRES_USER: ltc_user
@@ -21,6 +22,7 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     container_name: ltc_backend
+    restart: unless-stopped
     command: >
       sh -c "python manage.py makemigrations --noinput &&
              python manage.py migrate --noinput &&
@@ -43,6 +45,7 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
     container_name: ltc_frontend
+    restart: unless-stopped
     ports:
       - "80:80"
     depends_on:

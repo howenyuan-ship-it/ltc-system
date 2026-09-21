@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     'apps.assessments',
     'apps.reports',
     'apps.quality',
+    'apps.geo',
 ]
 
 MIDDLEWARE = [
@@ -132,4 +133,22 @@ SPECTACULAR_SETTINGS = {
     'DESCRIPTION': '新東安居家長照服務管理系統後端 API',
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
+}
+
+# ── 地理位置管理 ──────────────────────────────────────────
+# TGOS 全國門牌地址定位服務 (內政部)。未設定金鑰時自動改用 fallback 假座標，
+# 讓開發與 demo 環境不必先申請帳號也能跑。
+TGOS_APP_ID = config('TGOS_APP_ID', default='')
+TGOS_APP_KEY = config('TGOS_APP_KEY', default='')
+
+# 服務判定為「遲到」的寬限分鐘數：超過排定開始時間這麼久仍未打卡即標紅
+SERVICE_LATE_GRACE_MINUTES = config('SERVICE_LATE_GRACE_MINUTES', default=15, cast=int)
+
+# 居服員位置視為「離線」的分鐘數
+CAREGIVER_LOCATION_STALE_MINUTES = config('CAREGIVER_LOCATION_STALE_MINUTES', default=30, cast=int)
+
+# fallback 假座標的範圍（台南市區）
+GEOCODE_FALLBACK_BOUNDS = {
+    'lat_min': 22.930, 'lat_max': 23.060,
+    'lng_min': 120.150, 'lng_max': 120.300,
 }
