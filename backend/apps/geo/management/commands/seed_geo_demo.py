@@ -102,7 +102,10 @@ class Command(BaseCommand):
     # ── 3. 定位 ──────────────────────────────────────────────
     def _geocode(self):
         from django.core.management import call_command
-        call_command('geocode_cases', verbosity=0)
+        # 用 --all 強制重算：補完門牌地址後，原本只依「台南市東區」這種
+        # 行政區等級字串算出來的座標會讓同區個案全部疊在同一點，必須重跑。
+        # 人工設定的座標由 geocode_cases 自己的保護機制擋住，不會被覆蓋。
+        call_command('geocode_cases', all=True, verbosity=0)
         using_fallback = not (settings.TGOS_APP_ID and settings.TGOS_APP_KEY)
         note = '（TGOS 金鑰未設定，使用 fallback 假座標）' if using_fallback else '（TGOS 實際定位）'
         self.stdout.write(f'✓ 地址定位完成 {note}')
